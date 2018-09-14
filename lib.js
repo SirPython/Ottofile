@@ -28,7 +28,6 @@ const saveArticles = (articles) =>
 const removeDuplicates = (arr) =>
     arr.filter((el, i) => arr.indexOf(el) === i);
 
-
 /**
  * Return a promise that returns a div element with the HTML of the webpage
  * at the url contained inside.

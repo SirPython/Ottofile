@@ -1,0 +1,23 @@
+{
+  "name": "ottofile",
+  "version": "1.0.0",
+  "description": "Automatically file away current news sources.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "http-server ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SirPython/Ottofile.git"
+  },
+  "author": "SirPython",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SirPython/Ottofile/issues"
+  },
+  "homepage": "https://github.com/SirPython/Ottofile#readme",
+  "devDependencies": {
+    "http-server": "^0.11.1"
+  }
+}
