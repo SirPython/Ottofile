@@ -1,4 +1,3 @@
-const CORS_BYPASS = `https://cors-anywhere.herokuapp.com/`;
 const SOURCES = "sources.json";
 
 let articles = [];
@@ -15,7 +14,7 @@ fetch(SOURCES)
 
     for(source in sources) {
         promises.push(
-            crawl(CORS_BYPASS + source, sources[source])
+            crawl(source, sources[source])
             .then(({links, source}) =>
                 links.forEach(
                     link => articles.push(source + link.pathname.substring(1))
