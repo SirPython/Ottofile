@@ -4,12 +4,13 @@ const SOURCES = "sources.json";
 /* The promise to load old articles and the promises to add news ones are
 put here so that no removing of duplicates or saving is done before everything
 is loaded. */
-const promises = [];
 let articles = [];
 
 fetch(SOURCES)
 .then(r => r.json())
 .then(sources => {
+    const promises = [];
+
     const myjson = localStorage.getItem("articles");
     if(myjson) {
         promises.push(loadArticles(myjson).then(r => articles = articles.concat(r)));
