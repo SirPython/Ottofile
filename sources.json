@@ -1,0 +1,4 @@
+{
+    "https://www.nytimes.com/": "article a",
+    "https://brookings.edu/"  : "div.jumbotron-message h2 a,div.feature-secondary div.article-info h4 a"
+}
