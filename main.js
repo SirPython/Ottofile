@@ -5,16 +5,16 @@ const SOURCES = "sources.json";
 put here so that no removing of duplicates or saving is done before everything
 is loaded. */
 const promises = [];
-
-const myjson = localStorage.getItem("articles");
-articles = [];
-if(myjson) {
-    promises.push(loadArticles(myjson).then(r => articles = r));
-}
+let articles = [];
 
 fetch(SOURCES)
 .then(r => r.json())
 .then(sources => {
+    const myjson = localStorage.getItem("articles");
+    if(myjson) {
+        promises.push(loadArticles(myjson).then(r => articles = articles.concat(r)));
+    }
+
     for(source in sources) {
         promises.push(
             crawl(CORS_BYPASS + source, sources[source])

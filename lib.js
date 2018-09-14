@@ -24,7 +24,12 @@ const saveArticles = (articles) =>
         }
     }).then(r => r.json());
 
-// TODO: Slow. Implement a better method.
+/**
+ * Remove duplicated elements from an array.
+ *
+ * This is slow and inefficient. See if this causes problems as the number
+ * of articles grows. If so, use a more efficient method.
+ */
 const removeDuplicates = (arr) =>
     arr.filter((el, i) => arr.indexOf(el) === i);
 
