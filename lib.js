@@ -74,6 +74,25 @@ const crawl = (url, selector) =>
     });
 
 /**
+ * Given a blob, starts a download for the user to download this file.
+ */
+const download = (blob) => {
+    const url = URL.createObjectURL(blob);
+
+
+    const a = Object.assign(
+        document.createElement("a"), {href: url, download: "ottofiler.zip"}
+    );
+    document.body.appendChild(a);
+    a.click();
+
+    setTimeout(() => {
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    });
+}
+
+/**
  * Stuff articles into massive pdf. User downloads pdf.
  *
  * Size is the maximum number of megabytes to download.
@@ -82,18 +101,20 @@ const crawl = (url, selector) =>
  * TODO: Maybe don't do chrome PDF download? I don't know how easy it is to
  * download to an external HDD from chrome. Also, is the PDF searching enough?
  */
-const download = (articles, size = 1024) => {
+const generateZIP = (articles, size = 1024) => {
+    const zip = new JSZip();
+    const fullArticles = zip.folder("articles");
+    const summaries = zip.folder("summaries");
+
     const promises = [];
+
     for(article of articles) {
-        promises.push(getDocument(article))
+        promises.push(getDocument(article).then(html => {
+            fullArticles.file(article, html.innerHTML);
+        }));
     }
-    Promise.all(promises).then(docs => {
-        const pdf = document.createElement("div");
-        docs.forEach(doc => pdf.appendChild(doc));
 
-        const win = window.open();
-        win.document.body.appendChild(pdf);
-
-        win.print();
-    });
+    Promise.all(promises)
+    .then(() => zip.generateAsync({type: "blob"}))
+    .then((blob) => download(blob))
 }
