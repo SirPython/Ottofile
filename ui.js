@@ -1,10 +1,42 @@
-const numFiled = document.getElementById("num_filed");
-const numSourcesEl =
+window.UI = (() => {
+    const elems = {};
+    const variables = {};
 
-fetch(SOURCES).then(r => r.json()).then(r =>
-    document.getElementById("num_sources").innerText = "Number of sources used: " +  Object.keys(r).length
-);
+    /**
+     * Wrapper for document.getElementById, but registers elements in a dict
+     * so that function isn't called too many times.
+     */
+    const $ = (id) => {
+        if(id in elems) {
+            return elems[id];
+        }
+        elems[id] = document.getElementById(id);
+        return elems[id];
+    }
 
-setInterval(() => {
-    numFiled.innerText = "Articles filed: " + articles.length;
-});
+    /**
+     * Hacky.
+     */
+    const isEqual = (a, b) => (a ? a.toString() : null) === (b ? b.toString() : null);
+
+    /**
+     * Registers a global variable to be watched for changes. If it changes,
+     * fn is called.
+     */
+    const register = (variable, fn, delay = 100) => {
+        variables[variable] = window[variable];
+
+        setInterval(() => {
+            try {
+                if(!isEqual(window[variable], variables[variable])) {
+                    fn($);
+                    variables[variable] = window[variable];
+                }
+            } catch (e) {}
+        }, delay);
+    }
+
+    return {
+        register
+    }
+})();

@@ -1,5 +1,3 @@
 {
-    "https://www.nytimes.com/": "article a",
-    "https://brookings.edu/"  : "div.jumbotron-message h2 a,div.feature-secondary div.article-info h4 a,div.list-content article div h4 a,div.module-content.post-count-3 article.archive-view.report.post.has-image"
-    ""
+    "https://www.nytimes.com/": "article a"
 }
