@@ -79,7 +79,6 @@ const crawl = (url, selector) =>
 const download = (blob) => {
     const url = URL.createObjectURL(blob);
 
-
     const a = Object.assign(
         document.createElement("a"), {href: url, download: "ottofiler.zip"}
     );
@@ -103,14 +102,16 @@ const download = (blob) => {
  */
 const generateZIP = (articles, size = 1024) => {
     const zip = new JSZip();
-    const fullArticles = zip.folder("articles");
-    const summaries = zip.folder("summaries");
+    const fullArticles = zip.folder(".articles");
+    const summaries = zip.folder(".summaries");
 
     const promises = [];
+    let id = 0;
 
     for(article of articles) {
+        console.log(article);
         promises.push(getDocument(article).then(html => {
-            fullArticles.file(article, html.innerHTML);
+            fullArticles.file(`article${id++}.html`, html.innerHTML);
         }));
     }
 
