@@ -1,10 +1,14 @@
 const SOURCES = "sources.json";
 
-let articles = [];
+UI.register("articles", ($) => $("num_filed").innerText = articles.length)
+UI.register("sources", ($) => $("num_sources").innerText = Object.keys(sources).length);
+
+window.articles = [];
 
 fetch(SOURCES)
 .then(r => r.json())
 .then(sources => {
+    window.sources = sources;
     const promises = [];
 
     const myjson = localStorage.getItem("articles");
