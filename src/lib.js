@@ -136,11 +136,15 @@ const generateZIP = (articles, size = 1024) => {
     let id = 0;
 
     for(const article of articles) {
-        console.log(article);
-        promises.push(getDocument(article).then(html => {
-            fullArticles.file(`article${id++}.html`, html.innerHTML);
-            summaries.file(`article${id}-summary.txt`, summarize(html.innerText))
-        }));
+        promises.push(
+            getDocument(article)
+            .catch(e => console.log(e))
+            .then(html => {
+                fullArticles.file(`article${id++}.html`, html.innerHTML);
+                summaries.file(`article${id}-summary.txt`, summarize(html.innerText))
+            })
+
+        );
     }
 
     Promise.all(promises)

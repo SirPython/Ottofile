@@ -21,7 +21,7 @@ fetch(SOURCES)
             crawl(source, sources[source])
             .then(({links, source}) =>
                 links.forEach(
-                    link => articles.push(source + link.pathname.substring(1))
+                    link => articles.push(source + link.pathname)
                 )
             )
         );
