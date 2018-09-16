@@ -102,8 +102,8 @@ const download = (blob) => {
  */
 const generateZIP = (articles, size = 1024) => {
     const zip = new JSZip();
-    const fullArticles = zip.folder(".articles");
-    const summaries = zip.folder(".summaries");
+    const fullArticles = zip.folder("articles"); // TODO MAKE HIDDEN and user searches with utility
+    const summaries = zip.folder("summaries");
 
     const promises = [];
     let id = 0;
