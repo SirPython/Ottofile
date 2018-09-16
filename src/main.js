@@ -1,4 +1,4 @@
-const SOURCES = "sources.json";
+const SOURCES = "src/sources.json";
 
 UI.register("articles", ($) => $("num_filed").innerText = articles.length)
 UI.register("sources", ($) => $("num_sources").innerText = Object.keys(sources).length);
