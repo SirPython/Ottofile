@@ -78,17 +78,34 @@ const download = (blob) => {
 /**
  * Generates a summary of a text. Uses the algorithm from smmry.com.
  *
- * 1. Associate words with grammatical counterparts (city and cities)
+ * 1. TODO Associate words with grammatical counterparts (city and cities)
  * 2. Count the occurance of each word in a text.
  * 3. Split up the text by sentences (wathcing out for e.g. 'Mr.')
  * 4. Rank sentences by most occuring words.
  * 5. Return X number of sentences based on rank.
- *
- * Documentation on compromise sucks big time, so the use of this API is hacky
- * at best.
  */
 const summarize = (text, numSentences) => {
+    const words = (str) => str.split(/[^a-zA-Z-]+/).filter(Boolean);
 
+    const freqs = {};
+    for(let word of words(text)) {
+        freqs[word] = freqs[word] + 1 || 0;
+    }
+
+    const sentences =
+        text.split(/[\.\?\!]/).filter(Boolean).map(sent => sent.trim());
+    const ranks = {};
+
+    for(let sentence of sentences) {
+        const localWords = words(sentence);
+        ranks[sentence] = 0;
+
+        for(let word of localWords) {
+            ranks[sentence] += freqs[word];
+        }
+    }
+
+    // RANK SENTENCES, RETURN TOP X
 }
 
 /**
