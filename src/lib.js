@@ -13,8 +13,8 @@ const removeTags = (docstring, tags) => {
             new RegExp(
                 weirdTags.includes(tag)
                     ? `<${tag}.*>`
-                    : `<${tag}.*>.*<\/${tag}>`
-            )
+                    : `<${tag}.*>.*<\/${tag}>`,
+            "gmi")
         ).join('');
     }
 
@@ -65,7 +65,9 @@ const getDocument = (url, tagsToRemove = []) =>
     .then(r => r.text())
     .then(r => {
         // TODO these should be specified through arguments?
+        console.log("======\n", r);
         r = removeTags(r, tagsToRemove);
+        console.log("removed:", r);
 
         const div = document.createElement("div");
         div.innerHTML = r;
@@ -180,19 +182,18 @@ const summarize = (text, numSentences = 10) => {
  */
 const generateZIP = (articles, size = 1024) => {
     const zip = new JSZip();
-    const fullArticles = zip.folder(".articles"); // TODO MAKE HIDDEN and user searches with utility
-    const summaries = zip.folder(".summaries");
+    const fullArticles = zip.folder("articles"); // TODO MAKE HIDDEN and user searches with utility
+    const summaries = zip.folder("summaries");
 
     const promises = [];
     window.downloaded = 0;
 
     for(const article of articles) {
         promises.push(
-            getDocument(article, ["link", "script"])
+            getDocument(article, ["link", "script", "img"])
             .then(html => {
                 fullArticles.file(`article${downloaded++}.html`, html.innerHTML);
-                console.log("article", downloaded, summarize(html.innerText));
-                summaries.file(`article${downloaded}-summary.txt`, summarize(html.innerText))
+                summaries.file(`article${downloaded}-summary.txt`, summarize(html.body.innerText))
             })
         );
     }
