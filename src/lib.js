@@ -120,7 +120,9 @@ const sortObj = (obj) => {
 const summarize = (text, numSentences = 10) => {
     const freqs = {};
     for(let word of words(text)) {
-        freqs[word] = freqs[word] ? freqs[word] + 1 : 1;
+        freqs[word.toLowerCase()] = freqs[word.toLowerCase()]
+            ? freqs[word.toLowerCase()] + 1
+            : 1;
     }
 
     const ranks = {};
@@ -135,10 +137,10 @@ const summarize = (text, numSentences = 10) => {
     const sorted = sortObj(ranks);
 
     const ret = [];
-    for(let i = 0; i < numSenteces; i++) {
+    for(let i = 0; i < numSentences; i++) {
         ret.push(Object.keys(sorted)[i]);
     }
-    return ret;
+    return ret.filter(Boolean);
 }
 
 /**
@@ -152,8 +154,8 @@ const summarize = (text, numSentences = 10) => {
  */
 const generateZIP = (articles, size = 1024) => {
     const zip = new JSZip();
-    const fullArticles = zip.folder("articles"); // TODO MAKE HIDDEN and user searches with utility
-    const summaries = zip.folder("summaries");
+    const fullArticles = zip.folder(".articles"); // TODO MAKE HIDDEN and user searches with utility
+    const summaries = zip.folder(".summaries");
 
     const promises = [];
     window.downloaded = 0;
