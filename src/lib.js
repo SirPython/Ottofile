@@ -106,13 +106,13 @@ const generateZIP = (articles, size = 1024) => {
     const summaries = zip.folder("summaries");
 
     const promises = [];
-    let id = 0;
+    window.downloaded = 0;
 
     for(const article of articles) {
         promises.push(
             getDocument(article)
             .then(html => {
-                fullArticles.file(`article${id++}.html`, html.innerHTML);
+                fullArticles.file(`article${downloaded++}.html`, html.innerHTML);
                 //summaries.file(`article${id}-summary.txt`, summarize(html.innerText))
             })
         );
