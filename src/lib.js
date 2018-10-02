@@ -36,11 +36,15 @@ const removeDuplicates = (arr) =>
 /**
  * Return a promise that returns a div element with the HTML of the webpage
  * at the url contained inside.
+ *
+ * Automatically filters out <img> tags because those would never load.
  */
 const getDocument = (url) =>
     fetchCORS(url)
     .then(r => r.text())
     .then(r => {
+        r = r.split(/<img.*>/gmi).join('');
+
         const div = document.createElement("div");
         div.innerHTML = r;
         return div;
@@ -69,7 +73,7 @@ const download = (blob) => {
     document.body.appendChild(a);
     a.click();
 
-    setTimeout(() => {
+    setTimeout(() => { //TODO necessary?
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
     });
