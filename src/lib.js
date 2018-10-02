@@ -76,6 +76,37 @@ const download = (blob) => {
 }
 
 /**
+ * Returns an array of the words in a string.
+ */
+const words = (str) => str.split(/[^a-zA-Z-]+/).filter(Boolean);
+
+/**
+ * Returns an array of the sentences in a string.
+ */
+const sentences = (str) =>
+    str.split(/[\.\?\!]/).filter(Boolean).map(sent => sent.trim());
+
+/**
+ * Sorts an object based on the values in the k:v pairs.
+ */
+const sortObj = (obj) => {
+    const arr = [];
+    const ret = {};
+
+    for(const key in obj) {
+        arr.push({key: key, val: obj[key]})
+    }
+
+    arr.sort((a,b) => b.val - a.val)
+
+    for(const pair of arr) {
+        ret[pair.key] = pair.val;
+    }
+
+    return ret;
+}
+
+/**
  * Generates a summary of a text. Uses the algorithm from smmry.com.
  *
  * 1. TODO Associate words with grammatical counterparts (city and cities)
@@ -83,29 +114,31 @@ const download = (blob) => {
  * 3. Split up the text by sentences (wathcing out for e.g. 'Mr.')
  * 4. Rank sentences by most occuring words.
  * 5. Return X number of sentences based on rank.
+ *
+ * TODO should numSenteces be numerical max or a percent of the total sentecnes?
  */
-const summarize = (text, numSentences) => {
-    const words = (str) => str.split(/[^a-zA-Z-]+/).filter(Boolean);
-
+const summarize = (text, numSentences = 10) => {
     const freqs = {};
     for(let word of words(text)) {
-        freqs[word] = freqs[word] + 1 || 0;
+        freqs[word] = freqs[word] ? freqs[word] + 1 : 1;
     }
 
-    const sentences =
-        text.split(/[\.\?\!]/).filter(Boolean).map(sent => sent.trim());
     const ranks = {};
-
-    for(let sentence of sentences) {
-        const localWords = words(sentence);
+    for(let sentence of sentences(text)) {
         ranks[sentence] = 0;
 
-        for(let word of localWords) {
+        for(let word of words(sentence)) {
             ranks[sentence] += freqs[word];
         }
     }
 
-    // RANK SENTENCES, RETURN TOP X
+    const sorted = sortObj(ranks);
+
+    const ret = [];
+    for(let i = 0; i < numSenteces; i++) {
+        ret.push(Object.keys(sorted)[i]);
+    }
+    return ret;
 }
 
 /**
@@ -130,7 +163,7 @@ const generateZIP = (articles, size = 1024) => {
             getDocument(article)
             .then(html => {
                 fullArticles.file(`article${downloaded++}.html`, html.innerHTML);
-                //summaries.file(`article${id}-summary.txt`, summarize(html.innerText))
+                summaries.file(`article${downloaded}-summary.txt`, summarize(html.innerText))
             })
         );
     }
