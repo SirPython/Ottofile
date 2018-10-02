@@ -78,7 +78,7 @@ const download = (blob) => {
 /**
  * Generates a summary of a text. Uses the algorithm from smmry.com.
  *
- * 1. TODO Associate words with grammatical counterparts (city and cities)
+ * 1. Associate words with grammatical counterparts (city and cities)
  * 2. Count the occurance of each word in a text.
  * 3. Split up the text by sentences (wathcing out for e.g. 'Mr.')
  * 4. Rank sentences by most occuring words.
@@ -88,34 +88,7 @@ const download = (blob) => {
  * at best.
  */
 const summarize = (text, numSentences) => {
-    text = nlp(text);
 
-    const occurances = {};
-    const sentences = [];
-
-    const frequencies = text.terms().out("frequency")
-    for(const term of frequencies) {
-        occurances[term] = frequencies[term].count;
-    }
-
-    for (let i = 0; i < text.sentences().list.length; i++) {
-        const sentence = text.sentences(i);
-        sentence.score = 0;
-
-        for(const word in sentence.terms().out("array")) {
-            sentence.score += occurances[word] || 0;
-        }
-
-        sentences.push(sentence);
-    }
-
-    sentences.sort((a,b) => a.score >= b.score);
-
-    if(!numSentences) {
-        numSentences = Math.round(sentences.length / 10);
-    }
-
-    return sentences.slice(numSentences - 1).join(". ");
 }
 
 /**
@@ -138,12 +111,10 @@ const generateZIP = (articles, size = 1024) => {
     for(const article of articles) {
         promises.push(
             getDocument(article)
-            .catch(e => console.log(e))
             .then(html => {
                 fullArticles.file(`article${id++}.html`, html.innerHTML);
-                summaries.file(`article${id}-summary.txt`, summarize(html.innerText))
+                //summaries.file(`article${id}-summary.txt`, summarize(html.innerText))
             })
-
         );
     }
 
