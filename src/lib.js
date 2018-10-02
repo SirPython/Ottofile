@@ -1,6 +1,27 @@
 const API_ROOT = "https://api.myjson.com/bins";
 
 /**
+ * Removes all of a certain tag from a docstring.
+ *
+ * Tags is an array of tag names;
+ */
+const removeTags = (docstring, tags) => {
+    const weirdTags = ["img", "link"];
+
+    for(const tag of tags) {
+        docstring = docstring.split(
+            new RegExp(
+                weirdTags.includes(tag)
+                    ? `<${tag}.*>`
+                    : `<${tag}.*>.*<\/${tag}>`
+            )
+        ).join('');
+    }
+
+    return docstring;
+}
+
+/**
  * Loads a myjson document. Each line in the myjson document should be a
  * different link to an article.
  */
@@ -39,11 +60,12 @@ const removeDuplicates = (arr) =>
  *
  * Automatically filters out <img> tags because those would never load.
  */
-const getDocument = (url) =>
+const getDocument = (url, tagsToRemove = []) =>
     fetchCORS(url)
     .then(r => r.text())
     .then(r => {
-        r = r.split(/<img.*>/gmi).join('');
+        // TODO these should be specified through arguments?
+        r = removeTags(r, tagsToRemove);
 
         const div = document.createElement("div");
         div.innerHTML = r;
@@ -166,9 +188,10 @@ const generateZIP = (articles, size = 1024) => {
 
     for(const article of articles) {
         promises.push(
-            getDocument(article)
+            getDocument(article, ["link", "script"])
             .then(html => {
                 fullArticles.file(`article${downloaded++}.html`, html.innerHTML);
+                console.log("article", downloaded, summarize(html.innerText));
                 summaries.file(`article${downloaded}-summary.txt`, summarize(html.innerText))
             })
         );
@@ -176,5 +199,5 @@ const generateZIP = (articles, size = 1024) => {
 
     Promise.all(promises)
     .then(() => zip.generateAsync({type: "blob"}))
-    .then((blob) => download(blob))
+    .then(download);
 }
