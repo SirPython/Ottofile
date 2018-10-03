@@ -178,10 +178,12 @@ const generateZIP = (articles, size = 1024) => {
         );
     }
 
+    promises.push(loadUtility(OS));
+
     Promise.all(promises)
-    .then(() => {
-        loadUtility(OS);
-        zip.generateAsync({type: "blob"})
+    .then(r => {
+        zip.file("utility", r.pop())
+        return zip.generateAsync({type: "blob"})
     })
     .then(download);
 }

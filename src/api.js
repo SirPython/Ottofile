@@ -75,14 +75,13 @@ const crawl = (url, selector) =>
 /**
  * Loads the search utility to be packaged into the zip file.
  */
-const loadUtility = (os) => {
-    const utilities = {
-        Mac: "utility-macos",
-        Linux: "utility-linux",
-        Win: "utility-win.exe",
-        "X11": "utility-linux"
-    };
-
-    fetch(`/utility/${utilities[os]}`)
-    .then(r => console.log(r));
-}
+const loadUtility = (os) =>
+    fetch(`/utility/${
+        {
+            Mac: "utility-macos",
+            Linux: "utility-linux",
+            Win: "utility-win.exe",
+            "X11": "utility-linux"
+        }[os]
+    }`)
+    .then(r => r.blob());
