@@ -13,11 +13,11 @@ const OS = (() => {
 /**
  * Given a blob, starts a download for the user to download this file.
  */
-const blobDownload = (blob) => {
+const blobDownload = (blob, name) => {
     const url = URL.createObjectURL(blob);
 
     const a = Object.assign(
-        document.createElement("a"), {href: url, download: "ottofiler.zip"}
+        document.createElement("a"), {href: url, download: name}
     );
     document.body.appendChild(a);
     a.click();
@@ -65,7 +65,7 @@ const downloadZip = (articles, size = 1024) => {
         zip.file("utility", r.pop())
         return zip.generateAsync({type: "blob"})
     })
-    .then(blobDownload);
+    .then(r => blobDownload(r, "ottofiles.zip"));
 }
 
 /**
@@ -75,15 +75,16 @@ const downloadZip = (articles, size = 1024) => {
 const downloadPDF = (articles, size = 1024) => {
     const promises = [];
     for(article of articles) {
-        promises.push(getDocument(article, ["script", "link", "img"]));
+        promises.push(
+            getDocument(article, ["script", "link", "img"])
+            .then(r => {downloaded++; return r;})
+        );
     }
     Promise.all(promises).then(docs => {
         const pdf = document.createElement("div");
         docs.forEach(doc => pdf.appendChild(doc));
 
-        const win = window.open();
-        win.document.body.appendChild(pdf);
-
-        win.print();
+        console.log(pdf, pdf.innerHTML);
+        blobDownload(new Blob([pdf.innerHTML], {type: "text/html"}), "ottofiles.html");
     });
 }
