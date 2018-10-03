@@ -8,10 +8,14 @@ UI.register("sources", ($) =>
 );
 UI.register("downloaded", ($) =>
     $("downloaded").innerText = `Downloaded: ${downloaded} / ${articles.length}`
-)
+);
+UI.register("filing", ($) => {
+    $("still_filing").innerText = filing ? "Still filing..." : "Filling complete.";
+});
 
 window.articles = [];
 
+window.filing = true;
 fetch(SOURCES)
 .then(r => r.json())
 .then(sources => {
@@ -39,5 +43,6 @@ fetch(SOURCES)
     articles = removeDuplicates(articles);
     saveArticles(articles).then(link => {
         localStorage.setItem("articles", link.uri);
+        window.filing = false;
     });
 });
