@@ -40,3 +40,18 @@ window.UI = (() => {
         register
     }
 })();
+
+const download = () => {
+    window.downloaded = 0;
+
+    switch(document.forms[0].format.value) {
+        case "zip":
+            downloadZip(articles);
+
+            break;
+        case "pdf":
+            downloadPDF(articles);
+
+            break;
+    }
+}
