@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "http-server .",
-    "compile": "pkg src/utility.js --out-path utility"
+    "build-util": "pkg src/utility.js --out-path utility",
+    "test-util": "./utility/utility-macos"
   },
   "repository": {
     "type": "git",

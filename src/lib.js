@@ -132,6 +132,18 @@ const summarize = (text, numSentences = 10) => {
     return ret.filter(Boolean);
 }
 
+const OS = (() => {
+    const app = navigator.appVersion;
+
+    const oses = ["Win", "Mac", "X11", "Linux"];
+
+    for(const os of oses) {
+        if(app.indexOf(os) !== -1) {
+            return os;
+        }
+    }
+})();
+
 /**
  * Stuff articles into massive pdf. User downloads pdf.
  *
@@ -167,6 +179,9 @@ const generateZIP = (articles, size = 1024) => {
     }
 
     Promise.all(promises)
-    .then(() => zip.generateAsync({type: "blob"}))
+    .then(() => {
+        loadUtility(OS);
+        zip.generateAsync({type: "blob"})
+    })
     .then(download);
 }

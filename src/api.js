@@ -71,3 +71,18 @@ const crawl = (url, selector) =>
             links: Array.from(doc.querySelectorAll(selector))
         }
     });
+
+/**
+ * Loads the search utility to be packaged into the zip file.
+ */
+const loadUtility = (os) => {
+    const utilities = {
+        Mac: "utility-macos",
+        Linux: "utility-linux",
+        Win: "utility-win.exe",
+        "X11": "utility-linux"
+    };
+
+    fetch(`/utility/${utilities[os]}`)
+    .then(r => console.log(r));
+}
