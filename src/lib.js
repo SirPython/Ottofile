@@ -3,23 +3,36 @@ const API_ROOT = "https://api.myjson.com/bins";
 /**
  * Removes all of a certain tag from a docstring.
  *
- * Tags is an array of tag names;
+ * Tags is an array of tag names.
+ *
+ * TODO Memoize the regexp creation.
  */
-const removeTags = (docstring, tags) => {
-    const weirdTags = ["img", "link"];
+const removeTags = (() => {
+    const regexps = {};
 
-    for(const tag of tags) {
-        docstring = docstring.split(
-            new RegExp(
-                weirdTags.includes(tag)
-                    ? `<${tag}.*>`
-                    : `<${tag}.*>.*<\/${tag}>`,
-            "gmi")
-        ).join('');
+    return (docstring, tags) => {
+        const weirdTags = ["img", "link"];
+
+        for(const tag of tags) {
+            let regexp;
+
+            if (tag in regexps) {
+                regexp = regexps[tag];
+            } else {
+                regexp = new RegExp(
+                    weirdTags.includes(tag)
+                        ? `<${tag}.*>`
+                        : `<${tag}.*>.*<\/${tag}>`,
+                "gmi");
+                regexps[tag] = regexp;
+            }
+
+            docstring = docstring.replace(regexp, '');
+        }
+
+        return docstring;
     }
-
-    return docstring;
-}
+})();
 
 /**
  * Loads a myjson document. Each line in the myjson document should be a
@@ -64,10 +77,7 @@ const getDocument = (url, tagsToRemove = []) =>
     fetchCORS(url)
     .then(r => r.text())
     .then(r => {
-        // TODO these should be specified through arguments?
-        console.log("======\n", r);
         r = removeTags(r, tagsToRemove);
-        console.log("removed:", r);
 
         const div = document.createElement("div");
         div.innerHTML = r;
@@ -110,9 +120,11 @@ const words = (str) => str.split(/[^a-zA-Z-]+/).filter(Boolean);
 
 /**
  * Returns an array of the sentences in a string.
+ *
+ * https://stackoverflow.com/questions/18914629/split-string-into-sentences-in-javascript
  */
 const sentences = (str) =>
-    str.split(/[\.\?\!]/).filter(Boolean).map(sent => sent.trim());
+    str.replace(/([.?!])\s*(?=[A-Z])/g, "$1|").split("|")
 
 /**
  * Sorts an object based on the values in the k:v pairs.
@@ -168,6 +180,7 @@ const summarize = (text, numSentences = 10) => {
     for(let i = 0; i < numSentences; i++) {
         ret.push(Object.keys(sorted)[i]);
     }
+
     return ret.filter(Boolean);
 }
 
@@ -192,8 +205,15 @@ const generateZIP = (articles, size = 1024) => {
         promises.push(
             getDocument(article, ["link", "script", "img"])
             .then(html => {
-                fullArticles.file(`article${downloaded++}.html`, html.innerHTML);
-                summaries.file(`article${downloaded}-summary.txt`, summarize(html.body.innerText))
+                fullArticles.file(
+                    `article${downloaded++}.html`,
+                    html.innerHTML
+                );
+
+                //summaries.file(
+                //    `article${downloaded}-summary.txt`,
+                //    summarize(html.innerHTML.replace(/<.*/gmi, ''))
+                //);
             })
         );
     }
