@@ -1,3 +1,8 @@
 {
-    "http://thehill.com": "h4 a"
+    "http://thehill.com": "h4 a",
+    "https://www.aljazeera.com/": ".default-style p+a, #latest a, .opinion-wrapper div>a .human-stories-caption a",
+    "https://allafrica.com/": ".owl-item a, .foundation a, .stories a",
+    "http://www.bbc.com/": "div[class=media__content]+a",
+    "https://www.brookings.edu/": "article h4 a",
+    "https://www.businessinsider.com/": "a.title, h3 a"
 }

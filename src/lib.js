@@ -1,23 +1,3 @@
-const API_ROOT = "https://api.myjson.com/bins";
-
-/**
- * Given a blob, starts a download for the user to download this file.
- */
-const startUserDownload = (blob) => {
-    const url = URL.createObjectURL(blob);
-
-    const a = Object.assign(
-        document.createElement("a"), {href: url, download: "ottofiler.zip"}
-    );
-    document.body.appendChild(a);
-    a.click();
-
-    setTimeout(() => { //TODO necessary?
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-    });
-}
-
 const OS = (() => {
     const app = navigator.appVersion;
 
@@ -29,6 +9,22 @@ const OS = (() => {
         }
     }
 })();
+
+/**
+ * Given a blob, starts a download for the user to download this file.
+ */
+const blobDownload = (blob) => {
+    const url = URL.createObjectURL(blob);
+
+    const a = Object.assign(
+        document.createElement("a"), {href: url, download: "ottofiler.zip"}
+    );
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
 
 /**
  * Stuff articles into massive pdf. User downloads pdf.
@@ -69,7 +65,7 @@ const downloadZip = (articles, size = 1024) => {
         zip.file("utility", r.pop())
         return zip.generateAsync({type: "blob"})
     })
-    .then(startUserDownload);
+    .then(blobDownload);
 }
 
 /**

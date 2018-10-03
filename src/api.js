@@ -1,3 +1,5 @@
+const API_ROOT = "https://api.myjson.com/bins";
+
 class API {
     constructor(loadArticles, saveArticles) {
         this.loadArticles = loadArticles
