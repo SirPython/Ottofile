@@ -1,6 +1,35 @@
 const API_ROOT = "https://api.myjson.com/bins";
 
 /**
+ * Remove duplicated elements from an array.
+ *
+ * This is slow and inefficient. See if this causes problems as the number
+ * of articles grows. If so, use a more efficient method.
+ */
+const removeDuplicates = (arr) =>
+    arr.filter((el, i) => arr.indexOf(el) === i);
+
+/**
+ * Sorts an object based on the values in the k:v pairs.
+ */
+const sortObj = (obj) => {
+    const arr = [];
+    const ret = {};
+
+    for(const key in obj) {
+        arr.push({key: key, val: obj[key]})
+    }
+
+    arr.sort((a,b) => b.val - a.val)
+
+    for(const pair of arr) {
+        ret[pair.key] = pair.val;
+    }
+
+    return ret;
+}
+
+/**
  * Removes all of a certain tag from a docstring.
  *
  * Tags is an array of tag names.
@@ -35,67 +64,6 @@ const removeTags = (() => {
 })();
 
 /**
- * Loads a myjson document. Each line in the myjson document should be a
- * different link to an article.
- */
-const loadArticles = (url) =>
-    fetch(url).then(r => r.json()).then(r => r.articles)
-
-/**
- * Creates a new myjson with the myjson api. Each line in the myjson is
- * an article URL.
- *
- * Returns a string pointing to the myjson.
- */
-const saveArticles = (articles) =>
-    fetch(API_ROOT, {
-        method: "POST",
-        body: JSON.stringify({
-            articles
-        }),
-        headers: {
-            "Content-Type": "application/json; charset=utf-8",
-        }
-    }).then(r => r.json());
-
-/**
- * Remove duplicated elements from an array.
- *
- * This is slow and inefficient. See if this causes problems as the number
- * of articles grows. If so, use a more efficient method.
- */
-const removeDuplicates = (arr) =>
-    arr.filter((el, i) => arr.indexOf(el) === i);
-
-/**
- * Return a promise that returns a div element with the HTML of the webpage
- * at the url contained inside.
- *
- * Automatically filters out <img> tags because those would never load.
- */
-const getDocument = (url, tagsToRemove = []) =>
-    fetchCORS(url)
-    .then(r => r.text())
-    .then(r => {
-        r = removeTags(r, tagsToRemove);
-
-        const div = document.createElement("div");
-        div.innerHTML = r;
-        return div;
-    });
-
-/**
- * Open the document at url, return all elements with the selector.
- */
-const crawl = (url, selector) =>
-    getDocument(url).then(doc => {
-        return {
-            source: url,
-            links: Array.from(doc.querySelectorAll(selector))
-        }
-    });
-
-/**
  * Given a blob, starts a download for the user to download this file.
  */
 const download = (blob) => {
@@ -125,26 +93,6 @@ const words = (str) => str.split(/[^a-zA-Z-]+/).filter(Boolean);
  */
 const sentences = (str) =>
     str.replace(/([.?!])\s*(?=[A-Z])/g, "$1|").split("|")
-
-/**
- * Sorts an object based on the values in the k:v pairs.
- */
-const sortObj = (obj) => {
-    const arr = [];
-    const ret = {};
-
-    for(const key in obj) {
-        arr.push({key: key, val: obj[key]})
-    }
-
-    arr.sort((a,b) => b.val - a.val)
-
-    for(const pair of arr) {
-        ret[pair.key] = pair.val;
-    }
-
-    return ret;
-}
 
 /**
  * Generates a summary of a text. Uses the algorithm from smmry.com.
