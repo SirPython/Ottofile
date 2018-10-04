@@ -8,8 +8,6 @@
     <script src="src/api.js"></script>
 </head>
 <body>
-    <p id="still_filing"></p>
-
     <form>
         ZIP:
         <input type="radio" name="format" value="zip" checked/>
@@ -22,7 +20,7 @@
     </button>
 
     <p>
-        Articles filed: <p id="num_filed"></p>
+        Articles filed<span id="still_filing"> (Still filing...)</span>: <p id="num_filed"></p>
     </p>
     <p>
         Sources used: <p id="num_sources"></p>

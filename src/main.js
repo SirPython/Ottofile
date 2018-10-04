@@ -10,7 +10,7 @@ UI.register("downloaded", ($) =>
     $("downloaded").innerText = `Downloaded: ${downloaded} / ${articles.length}`
 );
 UI.register("filing", ($) => {
-    $("still_filing").innerText = filing ? "Still filing..." : "Filling complete.";
+    $("still_filing").innerText = filing ? " (Still filing...)" : "";
 });
 
 window.articles = [];
