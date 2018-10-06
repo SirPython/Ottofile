@@ -36,19 +36,20 @@ const blobDownload = (blob, name) => {
  */
 const downloadZip = (articles, size = 1024) => {
     const zip = new JSZip();
-    const fullArticles = zip.folder("articles"); // TODO MAKE HIDDEN and user searches with utility
-    const summaries = zip.folder("summaries");
+    const fullArticles = zip.folder(DEVELOPMENT ? "articles" : ".articles");
+    const summaries = zip.folder(DEVELOPMENT ? "summaries" : ".summaries");
 
     const promises = [];
 
+    let devCount = 0; // so doesn't take long in development
+
     for(const article of articles) {
+        if(DEVELOPMENT && devCount++ > 10) { continue; }
+
         promises.push(
             getDocument(article, ["link", "script", "img"])
             .then(html => {
-                html.getElementsByTagName("script")
-                    .concat(html.getElementsByTagName("link"))
-                        .concat(html.getElementsByTagName("img"))
-                .forEach(e => e.remove());
+                removeTags(html, ["link", "script", "img", "meta", "style"])
 
                 fullArticles.file(
                     `article${downloaded++}.html`,

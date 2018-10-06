@@ -26,3 +26,11 @@ const sortObj = (obj) => {
 
     return ret;
 }
+
+const removeTags = (el, tags) => {
+    for(const tag of tags) {
+        for(const removeable of Array.of(el.getElementsByTagName(tag))) {
+            removeable.remove();
+        }
+    }
+}

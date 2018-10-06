@@ -1,34 +1,34 @@
-/**
- * Removes all of a certain tag from a docstring.
- *
- * Tags is an array of tag names.
- */
-const removeTags = (() => {
-    const regexps = {};
-
-    return (docstring, tags) => {
-        const weirdTags = ["img", "link"];
-
-        for(const tag of tags) {
-            let regexp;
-
-            if (tag in regexps) {
-                regexp = regexps[tag];
-            } else {
-                regexp = new RegExp(
-                    weirdTags.includes(tag)
-                        ? `<${tag}.*>`
-                        : `<${tag}.*>.*<\/${tag}>`,
-                "gmi");
-                regexps[tag] = regexp;
-            }
-
-            docstring = docstring.replace(regexp, '');
-        }
-
-        return docstring;
-    }
-})();
+///**
+// * Removes all of a certain tag from a docstring.
+// *
+// * Tags is an array of tag names.
+// */
+//const removeTags = (() => {
+//    const regexps = {};
+//
+//    return (docstring, tags) => {
+//        const weirdTags = ["img", "link"];
+//
+//        for(const tag of tags) {
+//            let regexp;
+//
+//            if (tag in regexps) {
+//                regexp = regexps[tag];
+//            } else {
+//                regexp = new RegExp(
+//                    weirdTags.includes(tag)
+//                        ? `<${tag}.*>`
+//                        : `<${tag}.*>.*<\/${tag}>`,
+//                "gmi");
+//                regexps[tag] = regexp;
+//            }
+//
+//            docstring = docstring.replace(regexp, '');
+//        }
+//
+//        return docstring;
+//    }
+//})();
 
 /**
  * Returns an array of the words in a string.
