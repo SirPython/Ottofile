@@ -45,15 +45,21 @@ const downloadZip = (articles, size = 1024) => {
         promises.push(
             getDocument(article, ["link", "script", "img"])
             .then(html => {
+                html.getElementsByTagName("script")
+                    .concat(html.getElementsByTagName("link"))
+                        .concat(html.getElementsByTagName("img"))
+                .forEach(e => e.remove());
+
                 fullArticles.file(
                     `article${downloaded++}.html`,
                     html.innerHTML
                 );
 
-                //summaries.file(
-                //    `article${downloaded}-summary.txt`,
-                //    summarize(html.innerHTML.replace(/<.*/gmi, ''))
-                //);
+                summaries.file(
+                    `article${downloaded}-summary.txt`,
+                    //summarize(html.innerHTML.replace(/<.*/gmi, ''))
+                    summarize(html.innerText)
+                );
             })
         );
     }
@@ -77,7 +83,10 @@ const downloadPDF = (articles, size = 1024) => {
     for(article of articles) {
         promises.push(
             getDocument(article, ["script", "link", "img"])
-            .then(r => {downloaded++; return r;})
+            .then(r => {
+                downloaded++;
+                return r;
+            })
         );
     }
     Promise.all(promises).then(docs => {

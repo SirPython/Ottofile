@@ -56,7 +56,7 @@ const getDocument = (url, tagsToRemove = []) =>
     fetchCORS(url)
     .then(r => r.text())
     .then(r => {
-        r = removeTags(r, tagsToRemove);
+        //r = removeTags(r, tagsToRemove); // TODO is this much of a speed difference as opposed to removing the tags with html functions?
 
         const div = document.createElement("div");
         div.innerHTML = r;
