@@ -54,7 +54,13 @@ const saveArticles = (articles) =>
  */
 const getDocument = (url, tagsToRemove = []) =>
     fetchCORS(url)
-    .then(r => r.text())
+    .then(r => {
+        let ret;
+        try { // no idea why this error is here.
+            ret = r.text()
+            return ret;
+        } catch(e) {}
+    })
     .then(r => {
         //r = removeTags(r, tagsToRemove); // TODO is this much of a speed difference as opposed to removing the tags with html functions?
 

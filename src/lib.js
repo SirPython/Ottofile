@@ -59,7 +59,7 @@ const downloadZip = (articles, size = 1024) => {
                 summaries.file(
                     `article${downloaded}-summary.txt`,
                     //summarize(html.innerHTML.replace(/<.*/gmi, ''))
-                    summarize(html.innerText)
+                    summarize(html.innerText).join('\n')
                 );
             })
         );

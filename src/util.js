@@ -29,7 +29,7 @@ const sortObj = (obj) => {
 
 const removeTags = (el, tags) => {
     for(const tag of tags) {
-        for(const removeable of Array.of(el.getElementsByTagName(tag))) {
+        for(const removeable of Array.from(el.getElementsByTagName(tag))) {
             removeable.remove();
         }
     }

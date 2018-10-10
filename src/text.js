@@ -78,5 +78,7 @@ const summarize = (text, numSentences = 10) => {
         ret.push(Object.keys(sorted)[i]);
     }
 
+    console.log("****", "freqs", freqs, "ranks", ranks, "sorted", sorted, "ret", ret);
+
     return ret.filter(Boolean);
 }
