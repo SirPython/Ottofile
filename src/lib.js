@@ -36,8 +36,10 @@ const blobDownload = (blob, name) => {
  */
 const downloadZip = (articles, size = 1024) => {
     const zip = new JSZip();
-    const fullArticles = zip.folder(DEVELOPMENT ? "articles" : ".articles");
-    const summaries = zip.folder(DEVELOPMENT ? "summaries" : ".summaries");
+    //const fullArticles = zip.folder(DEVELOPMENT ? "articles" : ".articles");
+    //const summaries = zip.folder(DEVELOPMENT ? "summaries" : ".summaries");
+    const fullArticles = zip.folder("articles");
+    const summaries = zip.folder("summaries");
 
     const promises = [];
 
@@ -79,7 +81,7 @@ const downloadZip = (articles, size = 1024) => {
  * TODO: Also does too much.
  * TODO: Figure out how to do downloaded count on this one.
  */
-const downloadPDF = (articles, size = 1024) => {
+const downloadHTML = (articles, size = 1024) => {
     const promises = [];
     for(article of articles) {
         promises.push(
@@ -97,4 +99,22 @@ const downloadPDF = (articles, size = 1024) => {
         console.log(pdf, pdf.innerHTML);
         blobDownload(new Blob([pdf.innerHTML], {type: "text/html"}), "ottofiles.html");
     });
+}
+
+const downloadPDF = (articles) => {
+    const promises = [];
+    for(article of articles) {
+        promises.push(
+            getDocument(article, ["script", "link", "img"])
+            .then(r => {
+                downloaded++;
+                return r;
+            })
+        );
+    }
+    Promise.all(promises).then(docs => {
+        const doc = new jsPDF();
+        doc.text(docs.innerText);
+        doc.save("ottofiles.pdf");
+    })
 }

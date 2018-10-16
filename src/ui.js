@@ -53,5 +53,9 @@ const download = () => {
             downloadPDF(articles);
 
             break;
+        case "html":
+            downloadHTML(articles);
+
+            break;
     }
 }

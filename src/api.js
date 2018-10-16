@@ -17,10 +17,22 @@ const routers = [
  * A wrapper function for fetch that works with CORS.
  */
 const fetchCORS = (url, options = {}, routerI = 0) =>
-    fetch(routers[routerI] + url, options)
+    fetchTimeout(routers[routerI] + url, options)
     .catch(() =>
         ++routerI < routers.length ? fetchCORS(url, options, routerI) : null
     );
+
+/**
+ * Fetch with timeout functionality.
+ */
+const fetchTimeout = (url, options, timeout = 10000) => {
+    return Promise.race([
+        fetch(url, options),
+        new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Timeout")), timeout)
+        )
+    ]);
+}
 
 /**
  * Loads a myjson document. Each line in the myjson document should be a
