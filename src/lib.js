@@ -94,20 +94,18 @@ const loadArticles = (articles) => {
     for(article of articles) {
         promises.push(
             getDocument(article)
-            .then(r => {
-                removeEls(article, "link, script, img, meta")
-                // TODO IF SCRIPTS AREN'T BEING REMOVED, MAYBE REMOVEELS IS ACTUALLY A PURE FUNCTION INSTEAD AND DOESN'T MODIFY article
-                global.downloaded.update("downloaded", article);
+                .then(r => {
+                    removeEls(article, "link, script, img, meta")
+                    // TODO IF SCRIPTS AREN'T BEING REMOVED, MAYBE REMOVEELS IS ACTUALLY A PURE FUNCTION INSTEAD AND DOESN'T MODIFY article
+                    global.downloaded.update("downloaded", article);
 
-                return r;
-            })
+                    return r;
+                })
         );
     }
 
     return Promise.all(promises);
 }
-
-
 
 const downloadPDF = (articles) => {
     const html = document.createElement("div");

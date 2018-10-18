@@ -1,33 +1,43 @@
 const readline = require("readline");
-const fs       = require("fs");
+const fs       = require("fs").promises
 
-console.log("Loading files...");
+const arrToObj = (keys, values) => {
+    const ret = {};
 
-const files = {};
-
-const getSummaryFiles = () => {
-    let summaryFiles;
-
-    try {
-        summaryFiles = fs.readdirSync(".summaries")
-    } catch (e) {
-        summaryFiles = fs.readdirSync("summaries")
+    for(let i = 0; i < keys.length; i++) {
+        ret[keys[i]] = values[i];
     }
 
-    return summaryFiles;
+    return ret;
 }
 
 readline.createInterface({
     input: process.stdin,
     output: process.stdout
 }).question("Enter phrase to search for: ", (answer) => {
-    let summaryFiles;
+    fs.readDir("articles")
+        .then(paths => {
+            const promises = [];
 
-    try {
-        summaryFiles = getSummaryFiles()
-    } catch(e) {
-        console.log("Couldn't load summary files.");
-    }
+            for(const path of paths) {
+                promises.push(fs.readFile(path));
+            }
 
-    
+            return Promise.all([
+                Promise.resolve(paths),
+                ...promises
+            ]);
+        })
+        .then(({paths, files}) => arrToObj(paths, files))
+        .then(articles => {
+            const promises = [];
+
+            for(const article of articles) {
+                new Promise(
+                    (res, rej) =>
+                        res(articles[article].indexOf(answer) !== 1)
+                )
+                .then(found => found ? console.log(article) : null);
+            }
+        })
 });
