@@ -36,26 +36,13 @@ window.UI = (() => {
         }, delay);
     }
 
+    const download = () => {
+        window.downloaded = 0;
+
+        downloadZip();
+    }
+
     return {
-        register
+        register, download
     }
 })();
-
-const download = () => {
-    window.downloaded = 0;
-
-    switch(document.forms[0].format.value) {
-        case "zip":
-            downloadZip(articles);
-
-            break;
-        case "pdf":
-            downloadPDF(articles);
-
-            break;
-        case "html":
-            downloadHTML(articles);
-
-            break;
-    }
-}
