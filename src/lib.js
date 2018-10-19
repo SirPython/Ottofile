@@ -1,8 +1,3 @@
-//
-// To organize better, try putting every .then function into a separate
-// function. This may help with UI.
-//
-
 const to = (type) = (r) => r[type]();
 
 const createElement = (html) => {
