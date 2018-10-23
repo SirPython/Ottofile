@@ -15,7 +15,7 @@ readline.createInterface({
     input: process.stdin,
     output: process.stdout
 }).question("Enter phrase to search for: ", (answer) => {
-    fs.readDir("articles")
+    fs.readDir("./articles")
         .then(paths => {
             const promises = [];
 

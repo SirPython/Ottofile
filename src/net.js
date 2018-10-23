@@ -27,3 +27,22 @@ const GET = (
                 ? GET(url, options, i, routers)
                 : null
         )
+
+const loadUtility = (
+    os = (() => {
+        for(const os of ["Win", "Mac", "X11", "Linux"]) {
+            if(navigator.appVersion.indexOf(os) !== -1) {
+                return os;
+            }
+        }
+    })()
+) =>
+    fetch(`/utility/${
+        {
+            Mac: "utility-macos",
+            Linux: "utility-linux",
+            Win: "utility-win.exe",
+            "X11": "utility-linux"
+        }[os]
+    }`)
+    .then(r => r.blob());

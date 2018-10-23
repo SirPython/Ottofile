@@ -52,14 +52,37 @@ const loadArticles = (articles) => {
     return Promise.all(promises);
 }
 
-const downloadPDF = (articles) => {
-    console.log(articles);
-    const html = document.createElement("div");
+const downloadZIP = (articles, size = 1024) => {
+    const zip = new JSZip();
+    const fullArticles = zip.folder("articles");
+
+    const promises = [];
+
+    let devCount = 0; // so doesn't take long in development
+    let downloaded = 0;
+
     for(const article of articles) {
-        html.appendChild(article);
+        if(DEVELOPMENT && devCount++ > 10) { continue; }
+
+        promises.push(
+            getDocument(article)
+            .then(html => {
+                html = removeEls("link,script,img,meta,style")(html);
+
+                fullArticles.file(
+                    `article${downloaded++}.html`,
+                    html.innerHTML
+                );
+            })
+        );
     }
 
-    const doc = new jsPDF();
-    doc.text(html.innerText);
-    doc.save("ottofiles.pdf");
+    promises.push(loadUtility());
+
+    Promise.all(promises)
+    .then(r => {
+        zip.file("utility", r.pop())
+        return zip.generateAsync({type: "blob"})
+    })
+    .then(r => blobDownload(r, "ottofiles.zip"));
 }

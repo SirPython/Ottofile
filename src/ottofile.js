@@ -19,8 +19,9 @@ const UI = {
     },
 
     download: () => {
-        loadArticles(state.store.getState().articles)
-            .then(r => downloadPDF(r))
+        //loadArticles(state.store.getState().articles)
+            //.then(r => download(r))
+        downloadZIP(state.store.getState().articles)
     },
 
     update: (() => {

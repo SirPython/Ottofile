@@ -32,3 +32,16 @@ const every = (iter, fn) => {
 
     return Promise.all(promises);
 }
+
+const blobDownload = (blob, name) => {
+    const url = URL.createObjectURL(blob);
+
+    const a = Object.assign(
+        document.createElement("a"), {href: url, download: name}
+    );
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
