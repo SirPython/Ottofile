@@ -1,15 +1,27 @@
 let articles = []; // bad
 
+const pass = (r, message) => {console.log(message); return r}
+
 const UI = {
-    load:
+    load: () => {
         fetch("src/sources.json")
-            .then(r => r.json())
-            .then(r => Promise.all([loadSavedArticles(), autofile(r)]))
-            .then(r => removeDuplicates(r[0].concat(r[1])))
-            .then(r => {articles = r; saveArticles(r)}),
-    download:
-        loadArticles(articles)
-            .then(r => download(r[0])),
+            .then(to("json"))
+            .then(r => Promise.all([
+                loadSavedArticles()
+                    .then(state.addArticles),
+                autofile(r)
+            ]))
+            //.then(r => pass(r, "** on to remove"))
+            //.then(removeDuplicates(state.store.getState().articles))
+            //    .then(r => pass(r, r))
+            //    .then(state.setArticles)
+            .then(saveArticles)
+    },
+
+    download: () => {
+        loadArticles(state.store.getState().articles)
+            .then(r => downloadPDF(r))
+    },
 
     update: (() => {
         const els = {};
@@ -21,5 +33,20 @@ const UI = {
             els[id] = document.getElementById(id);
             els[id].value = value;
         }
-    })()
+    })(),
+
+    els: {
+        numFiled: document.getElementById("num_filed"),
+        downloaded: document.getElementById("downloaded")
+    }
 }
+
+UI.load();
+
+state.store.subscribe(() => {
+    const current = state.store.getState();
+    console.log(current);
+
+    UI.els.numFiled = current.articles.length;
+    UI.els.downloaded = current.articles.downloaded
+});

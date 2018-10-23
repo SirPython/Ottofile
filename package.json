@@ -22,5 +22,6 @@
   "devDependencies": {
     "http-server": "^0.11.1",
     "pkg": "^4.3.4"
-  }
+  },
+  "dependencies": {}
 }

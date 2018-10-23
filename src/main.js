@@ -11,7 +11,9 @@ const autofile = (sources) => {
 
     for(href in sources) {
         promises.push(
-            crawl(href, sources[href]).then(congregateArticles)
+            crawl(href, sources[href])
+                .then(congregateArticles)
+                .then(state.addArticles)
         );
     }
 
@@ -35,9 +37,15 @@ const saveArticles = (articles) =>
 const loadArticles = (articles) => {
     const promises = [];
 
-    for(article of articles) {
+    let TEMP = 0;
+
+    for(const article of articles) {
+        if(TEMP++ > 10) { break;}
         promises.push(
-            getDocument(article).then(r => removeEls("link, script, img, meta"))
+            getDocument(article)
+            .then(r => pass(r,r))
+            .then(removeEls("link, script, img, meta"))
+            .then(state.addDownloaded)
         );
     }
 
@@ -45,12 +53,13 @@ const loadArticles = (articles) => {
 }
 
 const downloadPDF = (articles) => {
+    console.log(articles);
     const html = document.createElement("div");
     for(const article of articles) {
         html.appendChild(article);
     }
 
     const doc = new jsPDF();
-    doc.text(docs.innerText);
+    doc.text(html.innerText);
     doc.save("ottofiles.pdf");
 }
