@@ -1,5 +1,5 @@
-const readline = require("readline");
-const fs       = require("fs").promises
+const readline   = require("readline");
+const fs = require("fs");
 
 const arrToObj = (keys, values) => {
     const ret = {};
@@ -11,33 +11,60 @@ const arrToObj = (keys, values) => {
     return ret;
 }
 
-readline.createInterface({
+const readDir = (path) => new Promise((res, rej) =>
+    fs.readdir(path, (err, files) => {
+        if(err) { rej(err); }
+
+        res(files);
+    }));
+
+const readFile = (path) => new Promise((res, rej) =>
+    fs.readFile(path, "utf8", (err, text) => {
+        if(err) { rej(err); return; }
+
+        res(text)
+    }));
+
+const interface = readline.createInterface({
     input: process.stdin,
     output: process.stdout
-}).question("Enter phrase to search for: ", (answer) => {
-    fs.readDir("./articles")
-        .then(paths => {
-            const promises = [];
-
-            for(const path of paths) {
-                promises.push(fs.readFile(path));
-            }
-
-            return Promise.all([
-                Promise.resolve(paths),
-                ...promises
-            ]);
-        })
-        .then(({paths, files}) => arrToObj(paths, files))
-        .then(articles => {
-            const promises = [];
-
-            for(const article of articles) {
-                new Promise(
-                    (res, rej) =>
-                        res(articles[article].indexOf(answer) !== 1)
-                )
-                .then(found => found ? console.log(article) : null);
-            }
-        })
 });
+
+const getStringSegments = (text, string, index = 0) => {
+    let instance = text.indexOf(string, index);
+    if(instance === -1) {
+        return;
+    }
+    console.log("    " + string.substring( Math.max(0, instance - 10), Math.min(text.length, instance + 10)))
+    getStringSegments(text, string, instance);
+}
+
+const ask = () => {
+    interface.question("Enter phrase to search for: ", (answer) => {
+        readDir("./articles")
+            .then(paths => {
+                const promises = [];
+
+
+                for(const path of paths) {
+                    promises.push(readFile(`./articles/${path}`));
+                }
+
+                return Promise.all([
+                    Promise.resolve(paths),
+                    ...promises
+                ]);
+            })
+            .then(r => arrToObj(r[0], r.slice(1)))
+            .then(articles => {
+                for(const article in articles) {
+                    if(articles[article].indexOf(answer) !== -1) {
+                        console.log(article);
+                        getStringSegments(articles[article], answer);
+                    }
+                }
+            }).then(ask);
+    });
+}
+
+ask();

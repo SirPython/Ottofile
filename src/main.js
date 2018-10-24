@@ -44,7 +44,7 @@ const loadArticles = (articles) => {
         promises.push(
             getDocument(article)
             .then(r => pass(r,r))
-            .then(removeEls("link, script, img, meta"))
+            //.then(removeEls("link, script, img, meta"))
             .then(state.addDownloaded)
         );
     }
@@ -53,7 +53,7 @@ const loadArticles = (articles) => {
 }
 
 const downloadZIP = (articles, size = 1024) => {
-    const zip = new JSZip();
+    window.zip = new JSZip();
     const fullArticles = zip.folder("articles");
 
     const promises = [];
@@ -62,17 +62,18 @@ const downloadZIP = (articles, size = 1024) => {
     let downloaded = 0;
 
     for(const article of articles) {
-        if(DEVELOPMENT && devCount++ > 10) { continue; }
+        //if(DEVELOPMENT && devCount++ > 10) { continue; }
 
         promises.push(
             getDocument(article)
             .then(html => {
-                html = removeEls("link,script,img,meta,style")(html);
+                //html = removeEls("link,script,img,meta,style")(html);
 
                 fullArticles.file(
-                    `article${downloaded++}.html`,
-                    html.innerHTML
+                    `article${downloaded++}.txt`,
+                    html.innerText
                 );
+                console.log(downloaded);
             })
         );
     }
