@@ -9,18 +9,19 @@
     <script src="src/lib.js"></script>
     <script src="src/main.js"></script>
 </head>
-<body onload="UI.load()">
-    <button onclick="UI.file()">
-        File
-    </button>
-    <button onclick="UI.download()">
-        Download
-    </button>
-
+<body onload="UI.load()" style="font-family: monospace">
     <p>
-        Articles filed<span id="still_filing"></span>: <span id="num_filed"></span>
+        <a onclick="UI.file()" href="#">
+            File
+        </a>
+        <p>
+            Articles filed<span id="still_filing"></span>: <span id="num_filed"></span>
+        </p>
     </p>
     <p>
+        <a onclick="UI.download()" href="#">
+            Download
+        </a>
         <p id="downloaded"></p>
     </p>
 
