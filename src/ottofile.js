@@ -24,15 +24,18 @@ const UI = {
         downloadZIP(state.store.getState().articles)
     },
 
+    /* TODO memoize? */
     update: (() => {
         const els = {};
 
         return (id, value) => {
             if(id in els) {
-                els[id].value = value;
+                els[id].innerText = value;
+
             }
+
             els[id] = document.getElementById(id);
-            els[id].value = value;
+            els[id].innerText = value;
         }
     })(),
 
@@ -46,8 +49,11 @@ UI.load();
 
 state.store.subscribe(() => {
     const current = state.store.getState();
-    console.log(current);
+    console.log("*** state", current, UI.els);
 
-    UI.els.numFiled = current.articles.length;
-    UI.els.downloaded = current.articles.downloaded
+    UI.update("num_filed", current.articles.length);
+
+    if(current.articles.downloaded) {
+        UI.update("downloaded", current.articles.downloaded);
+    }
 });

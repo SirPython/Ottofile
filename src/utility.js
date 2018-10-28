@@ -44,7 +44,6 @@ const ask = () => {
             .then(paths => {
                 const promises = [];
 
-
                 for(const path of paths) {
                     promises.push(readFile(`./articles/${path}`));
                 }
