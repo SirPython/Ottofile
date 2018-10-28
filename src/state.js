@@ -16,9 +16,15 @@ const state = (() => {
         }
     }
 
+    /**
+     * This returns the arg so that setters can be used in promise chains
+     * and return values will be carried through, so state can be modified
+     * on the go. See downloadArticles for an example.
+     */
     const setterfn = (fn) => (arg) => {
         fn(arg);
         stateChange();
+        return arg;
     }
 
     const setters = {

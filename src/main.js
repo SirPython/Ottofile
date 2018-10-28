@@ -31,11 +31,11 @@ const saveArticles = (articles) =>
 const downloadArticles = (folder, articles) =>
     every(
         articles,
-        (article) => getDocument(article)
+        (article) => getDocument(article).then(addDownloaded)
     );
 
 const packageArticles = (articles, zip) => {
-    for(let i = 0; i < articles.length; i++) {  
+    for(let i = 0; i < articles.length; i++) {
         zip.file(`${i}.txt`, articles[i].innerText);
     }
 }

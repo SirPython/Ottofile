@@ -3,7 +3,7 @@ let articles = []; // bad
 const pass = (r, message) => {console.log(message); return r}
 
 const UI = {
-    load: () => {
+    load: () =>
         fetch("src/sources.json")
             .then(to("json"))
             .then(r => Promise.all([
@@ -12,8 +12,7 @@ const UI = {
                 autofile(r)
             ]))
             /* TODO remove duplicates */
-            .then(r => saveArticles(r[0].concat(r[1])))
-    },
+            .then(r => saveArticles([...r[0], ...r[1]])),
 
     download: () =>
         downloadArticles(state.articles)
