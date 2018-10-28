@@ -31,7 +31,7 @@ const saveArticles = (articles) =>
 const downloadArticles = (articles) =>
     every(
         articles,
-        (article) => getDocument(article),//.then(addDownloaded), // TODO Don't modify state in pure functions
+        (article) => getDocument(article).then(state.addDownloaded), // TODO Don't modify state in pure functions
         10 //debug only
     );
 

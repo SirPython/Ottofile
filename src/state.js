@@ -5,7 +5,8 @@ const state = (() => {
         articles: [],
         downloaded: 0,
         total: null,
-        zip: new JSZip()
+        zip: new JSZip(),
+        filing: false
     };
 
     const register = (fn) => listener = fn;
@@ -38,7 +39,10 @@ const state = (() => {
             (total) => store.total = total,
 
         setArticles:
-            (articles) => store.articles = articles
+            (articles) => store.articles = articles,
+
+        toggleFiling:
+            () => store.filing = !store.filing
     }
 
     for(const setter in setters) {

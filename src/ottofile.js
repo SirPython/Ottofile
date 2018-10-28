@@ -9,11 +9,13 @@ const UI = {
 
     file: () =>
         fetch("src/sources.json")
+            .then(state.toggleFiling)
             .then(to("json"))
             .then(autofile)
             /* TODO remove duplicates */
-            .then(r => saveArticles([...state.store.articles, ...r])),
+            .then(r => saveArticles([...state.store.articles, ...r]))
             //TODO: YOU'VE GOTTA SAVE THE NEW LINK TO THE LOCALSTORAGE
+            .then(state.toggleFiling),
 
     download: () =>
         downloadArticles(state.store.articles)
@@ -38,10 +40,22 @@ const UI = {
     })()
 };
 
-state.register((current) => {
-    UI.update("num_filed", current.articles.length);
+state.register((store) => {
+    UI.update("num_filed", store.articles.length);
 
-    if(current.articles.downloaded) {
-        UI.update("downloaded", current.articles.downloaded);
+    if(store.filing) {
+        UI.update("still_filing", " (Still filing...)")
+    } else {
+        UI.update("still_filing", "")
+    }
+
+    if(store.downloaded) {
+        let percent = Math.round(
+            store.downloaded / store.articles.length
+        );
+
+        UI.update(
+            "downloaded",
+            `Downloaded: ${store.downloaded} (${percent}%)`);
     }
 });
