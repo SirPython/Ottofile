@@ -12,9 +12,15 @@ const UI = {
             .then(state.toggleFiling)
             .then(to("json"))
             .then(autofile)
-            /* TODO remove duplicates */
-            .then(r => saveArticles([...state.store.articles, ...r]))
-            //TODO: YOU'VE GOTTA SAVE THE NEW LINK TO THE LOCALSTORAGE
+            .then(r => removeDuplicates(
+                    [
+                        ...r,
+                        ...state.store.articles
+                    ].flat()
+                )
+            )
+            .then(state.setArticles)
+            .then(saveArticles)
             .then(saveLink)
             .then(state.toggleFiling),
 
@@ -45,7 +51,7 @@ state.register((store) => {
     UI.update("num_filed", store.articles.length);
 
     if(store.filing) {
-        UI.update("still_filing", " (Filing still in progress)")
+        UI.update("still_filing", "Filing...")
     } else {
         UI.update("still_filing", "")
     }
