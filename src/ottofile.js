@@ -15,6 +15,7 @@ const UI = {
             /* TODO remove duplicates */
             .then(r => saveArticles([...state.store.articles, ...r]))
             //TODO: YOU'VE GOTTA SAVE THE NEW LINK TO THE LOCALSTORAGE
+            .then(saveLink)
             .then(state.toggleFiling),
 
     download: () =>
@@ -44,7 +45,7 @@ state.register((store) => {
     UI.update("num_filed", store.articles.length);
 
     if(store.filing) {
-        UI.update("still_filing", " (Still filing...)")
+        UI.update("still_filing", " (Filing still in progress)")
     } else {
         UI.update("still_filing", "")
     }

@@ -28,6 +28,8 @@ const saveArticles = (articles) =>
         }
     }).then(to("json"));
 
+const saveLink = ({uri}) => localStorage.setItem("articles", uri)
+
 const downloadArticles = (articles) =>
     every(
         articles,
