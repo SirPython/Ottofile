@@ -30,13 +30,12 @@ const interface = readline.createInterface({
     output: process.stdout
 });
 
-const getStringSegments = (text, string, index = 0) => {
-    let instance = text.indexOf(string, index);
-    if(instance === -1) {
-        return;
+const getStringSegments = (text, string) => {
+    let index = 0;
+
+    while (true) {
+        text.indexOf(string, index);
     }
-    console.log("    " + string.substring( Math.max(0, instance - 10), Math.min(text.length, instance + 10)))
-    getStringSegments(text, string, instance);
 }
 
 const ask = () => {
@@ -60,7 +59,8 @@ const ask = () => {
                 for(const article in articles) {
                     if(articles[article].indexOf(answer) !== -1) {
                         console.log(article);
-                        getStringSegments(articles[article], answer);
+                        //getStringSegments(articles[article], answer);
+                        // open up all of the articles?
                     }
                 }
             }).then(ask);
