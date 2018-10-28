@@ -12,7 +12,7 @@ const UI = {
                 autofile(r)
             ]))
             /* TODO remove duplicates */
-            .then(saveArticles)
+            .then(r => saveArticles(r[0].concat(r[1])))
     },
 
     download: () =>
@@ -21,7 +21,7 @@ const UI = {
             .then(loadUtility)
             .then(packageUtility)
             .then(_ => zip.generateAsync({type: "blob:"}))
-            .then(r => blobDownload(r, "ottofiles.zip"))
+            .then(r => blobDownload(r, "ottofiles.zip")),
 
     update: (() => {
         const els = {};

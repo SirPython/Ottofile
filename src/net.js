@@ -2,16 +2,13 @@ const crawl = (url, selector) =>
     getDocument(url)
         .then(doc => {
             return {
-                source: href,
+                source: url,
                 links: Array.from(doc.querySelectorAll(selector))
             }
         })
 
-const getDocument = (url, tagsToRemove = []) => {
-    console.log(url.indexOf("http://localhost:8080"), url.indexOf("http://localhost:8080") !== -1)
-    if(url.indexOf("http://localhost:8080") !== -1) {console.log("skip");return document.createElement("div");}
-
-    return GET(url)
+const getDocument = (url, tagsToRemove = []) =>
+    GET(url)
     .then((r) => {
         if(r === null) {return null;}
         return to("text")(r);
@@ -19,7 +16,6 @@ const getDocument = (url, tagsToRemove = []) => {
         if (r=== null){ return "";}
         return createElement(r);
     });
-}
 
 const GET = (
     url,

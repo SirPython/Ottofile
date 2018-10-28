@@ -45,6 +45,8 @@ const removeEls = (q) => (doc) => {
 }
 
 const every = (iter, fn) => {
+    iter = Array.isArray(iter) ? iter : Object.keys(iter);
+
     const promises = [];
 
     for(const el of iter) {

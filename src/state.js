@@ -16,7 +16,7 @@ const state = (() => {
         }
     }
 
-    const setter = (fn) => (arg) => {
+    const setterfn = (fn) => (arg) => {
         fn(arg);
         stateChange();
     }
@@ -35,8 +35,8 @@ const state = (() => {
             (articles) => store.articles = articles
     }
 
-    for(const setter of setters) {
-        setters[setter] = setter(setters[setter]);
+    for(const setter in setters) {
+        setters[setter] = setterfn(setters[setter]);
     }
 
     return {
