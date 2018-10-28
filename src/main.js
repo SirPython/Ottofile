@@ -7,8 +7,9 @@ const loadSavedArticles = () => {
 }
 
 const autofile = (sources) =>
-    every(sources, (href) =>
-        crawl(href, sources[href])
+    every(
+        sources,
+        (href) => crawl(href, sources[href])
             .then(congregateArticles)
             .then(state.addArticles)
     );
@@ -27,21 +28,19 @@ const saveArticles = (articles) =>
         }
     }).then(to("json"));
 
-const buildZip = (folder) => {
-    const zip = new JSZip();
-    return zip.folder(folder);
+const downloadArticles = (folder, articles) =>
+    every(
+        articles,
+        (article) => getDocument(article)
+    );
+
+const packageArticles = (articles, zip) => {
+    for(let i = 0; i < articles.length; i++)
+        zip.file(`${i}.txt`, articles[i].innerText);
+    }
 }
 
-const downloadArticles = (folder, articles) =>
-    every(articles, (article, i) =>
-        getDocument(article)
-            .then(html =>
-                folder.file(
-                    `article${i}.txt`,
-                    html.innerText
-                )
-            )
-    );
+const packageUtility = (utility) => zip.file("00utility", utility)
 
 const downloadZIP = (articles, size = 1024) => {
     window.zip = new JSZip();
@@ -71,5 +70,3 @@ const downloadZIP = (articles, size = 1024) => {
     })
     .then(r => blobDownload(r, "ottofiles.zip"));
 }
-
-const packageUtility(_, utility)

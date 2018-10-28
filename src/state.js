@@ -1,74 +1,47 @@
 const state = (() => {
-    const store = Redux.createStore((state = {articles: [], downloaded: 0, total: null}, action) => {
-        switch(action.type) {
-            case "ADD_ARTICLES":
-                return {
-                    articles: state.articles.concat(action.articles),
-                    downloaded: state.downloaded
-                }
-                break;
+    let listener = null;
 
-            case "ADD_DOWNLOADED":
-                return {
-                    articles: state.articles,
-                    downloaded: state.downloaded + 1
-                }
+    const store = {
+        articles: [],
+        downloaded: 0,
+        total: null,
+        zip: new JSZip()
+    };
 
-            case "SET_TOTAL":
-                return {
-                    articles: state.articles,
-                    downloaded: state.downloaded,
-                    total: action.total
-                }
+    const register = (fn) => listener = fn;
 
-            case "SET_ARTICLES":
-                return {
-                    articles: action.articles,
-                    downloaded: state.downloaded,
-                    total: action.total
-                }
-
-            default:
-                return state
+    const stateChange = () => {
+        if(listener) {
+            listener(store);
         }
-    });
-
-    const addArticles = (articles) => {
-        store.dispatch({
-            type: "ADD_ARTICLES",
-            articles
-        });
-        return articles;
     }
 
-    const addDownloaded = (r) => {
-        store.dispatch({
-            type: "ADD_DOWNLOADED",
-        });
-        return r;
+    const setter = (fn) => (arg) => {
+        fn(arg);
+        stateChange();
     }
 
-    const setTotal = (total) => {
-        store.dispatch({
-            type: "SET_TOTAL",
-            total
-        });
-        return total;
+    const setters = {
+        addArticles:
+            (articles) => store.articles = store.articles.concat(articles),
+
+        addDownloaded:
+            () => store.downloaded += 1,
+
+        setTotal:
+            (total) => store.total = total,
+
+        setArticles:
+            (articles) => store.articles = articles
     }
 
-    const setArticles = (articles) => {
-        store.dispatch({
-            type: "SET_ARTICLES",
-            articles
-        });
-        return articles;
+    for(const setter of setters) {
+        setters[setter] = setter(setters[setter]);
     }
 
     return {
-        store,
-        addArticles,
-        addDownloaded,
-        setTotal,
-        setArticles
-    };
-})();
+        ...setters,
+        register,
+        ...store
+    }
+})()

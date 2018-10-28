@@ -11,22 +11,18 @@ const UI = {
                     .then(state.addArticles),
                 autofile(r)
             ]))
-            //.then(r => pass(r, "** on to remove"))
-            //.then(removeDuplicates(state.store.getState().articles))
-            //    .then(r => pass(r, r))
-            //    .then(state.setArticles)
+            /* TODO remove duplicates */
             .then(saveArticles)
     },
 
     download: () =>
-        buildZip("articles")
-            .then(zip => Promise.all([
-                downloadArticles(zip, state.store.getState().articles),
-                loadUtility()
-            ])),
-            .then()
+        downloadArticles(state.articles)
+            .then(r => packageArticles(r, state.zip))
+            .then(loadUtility)
+            .then(packageUtility)
+            .then(_ => zip.generateAsync({type: "blob:"}))
+            .then(r => blobDownload(r, "ottofiles.zip"))
 
-    /* TODO memoize? */
     update: (() => {
         const els = {};
 
@@ -39,20 +35,12 @@ const UI = {
             els[id] = document.getElementById(id);
             els[id].innerText = value;
         }
-    })(),
-
-    els: {
-        numFiled: document.getElementById("num_filed"),
-        downloaded: document.getElementById("downloaded")
-    }
+    })()
 }
 
 UI.load();
 
-state.store.subscribe(() => {
-    const current = state.store.getState();
-    console.log("*** state", current, UI.els);
-
+state.register((current) => {
     UI.update("num_filed", current.articles.length);
 
     if(current.articles.downloaded) {
