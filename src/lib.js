@@ -44,12 +44,18 @@ const removeEls = (q) => (doc) => {
     return doc;
 }
 
-const every = (iter, fn) => {
+const every = (iter, fn, limit = null) => {
+    // This way objects can be used as well
     iter = Array.isArray(iter) ? iter : Object.keys(iter);
 
     const promises = [];
 
     for(const el of iter) {
+        if(limit !== null) {
+            if(limit-- === 0) {
+                break;
+            }
+        }
         promises.push(fn(el));
     }
 

@@ -28,45 +28,17 @@ const saveArticles = (articles) =>
         }
     }).then(to("json"));
 
-const downloadArticles = (folder, articles) =>
+const downloadArticles = (articles) =>
     every(
         articles,
-        (article) => getDocument(article).then(addDownloaded)
+        (article) => getDocument(article),//.then(addDownloaded), // TODO Don't modify state in pure functions
+        10 //debug only
     );
 
 const packageArticles = (articles, zip) => {
     for(let i = 0; i < articles.length; i++) {
-        zip.file(`${i}.txt`, articles[i].innerText);
+        zip.file(`${i+1}.txt`, articles[i].innerText);
     }
 }
 
-const packageUtility = (utility) => zip.file("00utility", utility)
-
-const downloadZIP = (articles, size = 1024) => {
-    window.zip = new JSZip();
-    const fullArticles = zip.folder("articles");
-
-    const promises = [];
-
-    let devCount = 0; // so doesn't take long in development
-    let downloaded = 0;
-
-    for(const article of articles) {
-        //if(DEVELOPMENT && devCount++ > 10) { continue; }
-
-        promises.push(
-
-        );
-    }
-
-    promises.push(loadUtility());
-
-
-
-    Promise.all(promises)
-    .then(r => {
-        zip.file("utility", r.pop())
-        return zip.generateAsync({type: "blob"})
-    })
-    .then(r => blobDownload(r, "ottofiles.zip"));
-}
+const packageUtility = (utility, zip) => zip.file("00utility", utility);

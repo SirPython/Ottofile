@@ -9,8 +9,11 @@
     <script src="src/lib.js"></script>
     <script src="src/main.js"></script>
 </head>
-<body>
-    <button id="download">
+<body onload="UI.load()">
+    <button onclick="UI.file()">
+        File
+    </button>
+    <button onclick="UI.download()">
         Download
     </button>
 

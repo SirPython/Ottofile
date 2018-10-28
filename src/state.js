@@ -48,6 +48,6 @@ const state = (() => {
     return {
         ...setters,
         register,
-        ...store
+        store
     }
 })()

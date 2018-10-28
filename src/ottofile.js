@@ -4,22 +4,23 @@ const pass = (r, message) => {console.log(message); return r}
 
 const UI = {
     load: () =>
+        loadSavedArticles()
+            .then(state.addArticles),
+
+    file: () =>
         fetch("src/sources.json")
             .then(to("json"))
-            .then(r => Promise.all([
-                loadSavedArticles()
-                    .then(state.addArticles),
-                autofile(r)
-            ]))
+            .then(autofile)
             /* TODO remove duplicates */
-            .then(r => saveArticles([...r[0], ...r[1]])),
+            .then(r => saveArticles([...state.store.articles, ...r])),
+            //TODO: YOU'VE GOTTA SAVE THE NEW LINK TO THE LOCALSTORAGE
 
     download: () =>
-        downloadArticles(state.articles)
-            .then(r => packageArticles(r, state.zip))
+        downloadArticles(state.store.articles)
+            .then(r => packageArticles(r, state.store.zip))
             .then(loadUtility)
-            .then(packageUtility)
-            .then(_ => zip.generateAsync({type: "blob:"}))
+            .then(r => packageUtility(r, state.store.zip))
+            .then(_ => state.store.zip.generateAsync({type: "blob"}))
             .then(r => blobDownload(r, "ottofiles.zip")),
 
     update: (() => {
@@ -35,9 +36,7 @@ const UI = {
             els[id].innerText = value;
         }
     })()
-}
-
-UI.load();
+};
 
 state.register((current) => {
     UI.update("num_filed", current.articles.length);
