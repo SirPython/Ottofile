@@ -6,19 +6,12 @@ const loadSavedArticles = () => {
         : Promise.resolve(null);
 }
 
-const autofile = (sources) => {
-    const promises = [];
-
-    for(href in sources) {
-        promises.push(
-            crawl(href, sources[href])
-                .then(congregateArticles)
-                .then(state.addArticles)
-        );
-    }
-
-    return Promise.all(promises);
-}
+const autofile = (sources) =>
+    every(sources, (href) =>
+        crawl(href, sources[href])
+            .then(congregateArticles)
+            .then(state.addArticles)
+    );
 
 const removeDuplicates = (arr) =>
     arr.filter((el, i) => arr.indexOf(el) === i);
@@ -34,23 +27,21 @@ const saveArticles = (articles) =>
         }
     }).then(to("json"));
 
-const loadArticles = (articles) => {
-    const promises = [];
-
-    let TEMP = 0;
-
-    for(const article of articles) {
-        if(TEMP++ > 10) { break;}
-        promises.push(
-            getDocument(article)
-            .then(r => pass(r,r))
-            //.then(removeEls("link, script, img, meta"))
-            .then(state.addDownloaded)
-        );
-    }
-
-    return Promise.all(promises);
+const buildZip = (folder) => {
+    const zip = new JSZip();
+    return zip.folder(folder);
 }
+
+const downloadArticles = (folder, articles) =>
+    every(articles, (article, i) =>
+        getDocument(article)
+            .then(html =>
+                folder.file(
+                    `article${i}.txt`,
+                    html.innerText
+                )
+            )
+    );
 
 const downloadZIP = (articles, size = 1024) => {
     window.zip = new JSZip();
@@ -65,20 +56,13 @@ const downloadZIP = (articles, size = 1024) => {
         //if(DEVELOPMENT && devCount++ > 10) { continue; }
 
         promises.push(
-            getDocument(article)
-            .then(html => {
-                //html = removeEls("link,script,img,meta,style")(html);
 
-                fullArticles.file(
-                    `article${downloaded++}.txt`,
-                    html.innerText
-                );
-                console.log(downloaded);
-            })
         );
     }
 
     promises.push(loadUtility());
+
+
 
     Promise.all(promises)
     .then(r => {
@@ -87,3 +71,5 @@ const downloadZIP = (articles, size = 1024) => {
     })
     .then(r => blobDownload(r, "ottofiles.zip"));
 }
+
+const packageUtility(_, utility)

@@ -48,9 +48,7 @@ const every = (iter, fn) => {
     const promises = [];
 
     for(const el of iter) {
-        promises.push(
-            getDocument(article).then(r => removeEls("link, script, img, meta"))
-        );
+        promises.push(fn(el));
     }
 
     return Promise.all(promises);

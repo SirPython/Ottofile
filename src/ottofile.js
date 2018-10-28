@@ -18,11 +18,13 @@ const UI = {
             .then(saveArticles)
     },
 
-    download: () => {
-        //loadArticles(state.store.getState().articles)
-            //.then(r => download(r))
-        downloadZIP(state.store.getState().articles)
-    },
+    download: () =>
+        buildZip("articles")
+            .then(zip => Promise.all([
+                downloadArticles(zip, state.store.getState().articles),
+                loadUtility()
+            ])),
+            .then()
 
     /* TODO memoize? */
     update: (() => {
