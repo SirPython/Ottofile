@@ -74,3 +74,19 @@ const blobDownload = (blob, name) => {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
 }
+
+const getArticleText = (html) => {
+    console.log(html);
+    console.log(html.getElementsByTagName("p"))
+    console.log(Array.from(html.getElementsByTagName("p")));
+    console.log(Array.from(html.getElementsByTagName("p")).reduce(
+        (a, b) => `${a}\n${b.innerText}`,
+        ""
+    ));
+
+
+    return Array.from(html.getElementsByTagName("p")).reduce(
+        (a, b) => `${a}\n${b.innerText}`,
+        ""
+    );
+}

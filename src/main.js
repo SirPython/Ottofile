@@ -33,13 +33,15 @@ const saveLink = ({uri}) => localStorage.setItem("articles", uri)
 const downloadArticles = (articles) =>
     every(
         articles,
-        (article) => getDocument(article).then(state.addDownloaded), // TODO Don't modify state in pure functions
+        (article) => getDocument(article)
+            .then(getArticleText)
+            .then(state.addDownloaded), // TODO Don't modify state in pure functions
         10 //debug only
     );
 
 const packageArticles = (articles, zip) => {
     for(let i = 0; i < articles.length; i++) {
-        zip.file(`${i+1}.txt`, articles[i].innerText);
+        zip.file(`${i+1}.txt`, articles[i]);
     }
 }
 

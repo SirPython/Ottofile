@@ -10,7 +10,7 @@ const crawl = (url, selector) =>
 const getDocument = (url, tagsToRemove = []) =>
     GET(url)
     .then((r) => {
-        if(r === null) {return null;}
+        if(r === null) {return null;} // TODO this is gross seriously
         return to("text")(r);
     }).then((r) => {
         if (r=== null){ return "";}
