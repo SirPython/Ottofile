@@ -13,7 +13,7 @@ const arrToObj = (keys, values) => {
 
 const readDir = (path) => new Promise((res, rej) =>
     fs.readdir(path, (err, files) => {
-        if(err) { rej(err); }
+        if(err) { rej(err); return; }
 
         res(files);
     }));
@@ -40,12 +40,16 @@ const getStringSegments = (text, string) => {
 
 const ask = () => {
     interface.question("Enter phrase to search for: ", (answer) => {
-        readDir("./articles")
+        readDir(".")
             .then(paths => {
                 const promises = [];
 
                 for(const path of paths) {
-                    promises.push(readFile(`./articles/${path}`));
+                    if(!(/[0-9]/).exec(path.charAt(0))) {
+                        continue;
+                    }
+
+                    promises.push(readFile(`./${path}`));
                 }
 
                 return Promise.all([
@@ -56,13 +60,19 @@ const ask = () => {
             .then(r => arrToObj(r[0], r.slice(1)))
             .then(articles => {
                 for(const article in articles) {
-                    if(articles[article].indexOf(answer) !== -1) {
-                        console.log(article);
+                    if(articles[article].toLowerCase().indexOf(answer) !== -1) {
+                        console.log(
+                            article,
+                            articles[article].substring( // the source name
+                                0,
+                                articles[article].indexOf('\n')
+                            )
+                        );
                         //getStringSegments(articles[article], answer);
                         // open up all of the articles?
                     }
                 }
-            }).then(ask);
+            }).then(ask).catch(()=>{});
     });
 }
 

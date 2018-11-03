@@ -34,14 +34,19 @@ const downloadArticles = (articles) =>
     every(
         articles,
         (article) => getDocument(article)
-            .then(getArticleText)
+            .then(r => {
+                return {
+                    text: getArticleText(r),
+                    src: (/https?:\/\/([a-z\.]*)/gmi).exec(article)[1]
+                }
+            })
             .then(state.addDownloaded), // TODO Don't modify state in pure functions
         window.DEBUG ? 10 : -1
     );
 
 const packageArticles = (articles, zip) => {
     for(let i = 0; i < articles.length; i++) {
-        zip.file(`${i+1}.txt`, articles[i]);
+        zip.file(`${i+1}.txt`, `${articles[i].src}\n\n\n${articles[i].text}`);
     }
 }
 
