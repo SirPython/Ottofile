@@ -7,7 +7,7 @@ const crawl = (url, selector) =>
             }
         })
 
-const getDocument = (url, tagsToRemove = []) =>
+const getDocument = (url) =>
     GET(url)
     .then((r) => r ? to("text")(r) : null)
     .then((r) => r ? createElement(r) : null);

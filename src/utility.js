@@ -63,7 +63,7 @@ const ask = () => {
                     if(articles[article].toLowerCase().indexOf(answer) !== -1) {
                         console.log(
                             article,
-                            articles[article].substring( // the source name
+                            articles[article].substring( // source metadata
                                 0,
                                 articles[article].indexOf('\n')
                             )

@@ -24,6 +24,15 @@ const createElement = (html) => {
     const regex1 = new RegExp("(script|meta|style|).*>.*<\/(script|meta|style)>", "gmiy");
     const regex2 = new RegExp("<(img|link).*(>|\/>)", "gmiy");
 
+    html = html.replace(
+        regex1,
+        ""
+    );
+    html = html.replace(
+        regex2,
+        ""
+    );
+
     console.log('after', html.length);
     div.innerHTML = html;
     return div;
@@ -75,18 +84,24 @@ const blobDownload = (blob, name) => {
     window.URL.revokeObjectURL(url);
 }
 
-const getArticleText = (html) => {
-    console.log(html);
-    console.log(html.getElementsByTagName("p"))
-    console.log(Array.from(html.getElementsByTagName("p")));
-    console.log(Array.from(html.getElementsByTagName("p")).reduce(
-        (a, b) => `${a}\n${b.innerText}`,
-        ""
-    ));
-
-
-    return Array.from(html.getElementsByTagName("p")).reduce(
-        (a, b) => `${a}\n${b.innerText}`,
+const getArticleText = (html) =>
+    Array.from(html.getElementsByTagName("p")).reduce(
+        (a, b) => `${a}\n${b.textContent}`,
         ""
     );
+
+/**
+ * 1. Use NLP Compromise to find all the date-related strings in a document.
+ * 2. Try to turn each date string into a Date object.
+ * 3. If it works, then return the first one cause that's probably correct.
+ */
+const getArticleDate = (text) => {
+    window.text = text;
+
+    for(const date of nlp(text).dates().data()) {
+        const obj = new Date(date.normal);
+        if(!isNaN(obj.getDate())) {
+            return obj;
+        }
+    }
 }
