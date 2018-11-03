@@ -36,7 +36,7 @@ const downloadArticles = (articles) =>
         (article) => getDocument(article)
             .then(getArticleText)
             .then(state.addDownloaded), // TODO Don't modify state in pure functions
-        10 //debug only
+        window.DEBUG ? 10 : -1
     );
 
 const packageArticles = (articles, zip) => {
