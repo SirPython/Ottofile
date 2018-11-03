@@ -47,7 +47,6 @@ const downloadArticles = (articles) =>
 
 const packageArticles = (articles, zip) => {
     for(let i = 0; i < articles.length; i++) {
-        console.log(articles[i]);
         zip.file(`${i+1}.txt`, `${articles[i].src}\n\n\n${articles[i].text} ${articles[i].date}`);
     }
 }

@@ -70,8 +70,8 @@ state.register((store) => {
 
     if(store.downloaded) {
         let percent = (
-            store.downloaded / store.articles.length
-        ).toFixed(2);
+            store.downloaded / store.articles.length * 100
+        ).toFixed(0);
 
         UI.update(
             "downloaded",
