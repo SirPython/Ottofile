@@ -55,6 +55,15 @@ const UI = {
             .then(r => pass("done generate", r))
             .then(r => blobDownload(r, "ottofiles.zip")),
 
+    clear: () => {
+        if(!confirm("Are you sure you want to delete your files?")) {
+            return;
+        }
+
+        localStorage.setItem("articles", "");
+        location.reload();
+    },
+
     update: (() => {
         const els = {};
 
