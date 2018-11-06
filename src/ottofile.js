@@ -1,7 +1,13 @@
+const pass = (m, r) => {console.log(m); return r}
+
 const UI = {
     load: () =>
         loadSavedArticles()
-            .then(state.addArticles),
+            .then(r => {
+                if(r !== null) {
+                    state.addArticles(r)
+                }
+            }),
 
     /**
      * 1. Get query strings for finding the article links for each source
@@ -38,10 +44,15 @@ const UI = {
      */
     download: () =>
         downloadArticles(state.store.articles)
+            .then(r => pass("done downloaded", r))
             .then(r => packageArticles(r, state.store.zip))
+            .then(r => pass("done package", r))
             .then(loadUtility)
+            .then(r => pass("done util", r))
             .then(r => packageUtility(r, state.store.zip))
+            .then(r => pass("done packageutil", r))
             .then(_ => state.store.zip.generateAsync({type: "blob"}))
+            .then(r => pass("done generate", r))
             .then(r => blobDownload(r, "ottofiles.zip")),
 
     update: (() => {
@@ -50,7 +61,6 @@ const UI = {
         return (id, value) => {
             if(id in els) {
                 els[id].innerText = value;
-
             }
 
             els[id] = document.getElementById(id);

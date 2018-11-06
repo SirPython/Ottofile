@@ -49,6 +49,17 @@ const state = (() => {
         setters[setter] = setterfn(setters[setter]);
     }
 
+    /* TODO Eh??
+    const set = (id, fn) => {
+        store[id] = fn(store[id]);
+        listener(store);
+    }
+
+    const get = (id) => store[id];
+
+    state.set("articles", (old) => [...old, ...new]);
+    */
+
     return {
         ...setters,
         register,
